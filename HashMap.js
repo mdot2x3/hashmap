@@ -1,4 +1,4 @@
-const HashMap = () => {
+export const HashMap = () => {
   const loadFactor = 0.75;
   let capacity = 16;
   const buckets = new Array(capacity).fill(null);
@@ -51,7 +51,7 @@ const HashMap = () => {
     // check load factor and resize if needed
     if (length() >= loadFactor * capacity) {
       const oldBuckets = buckets.slice();
-      capacity = Math.floor(capacity * 1.5);
+      capacity = Math.floor(capacity * 2);
       buckets.length = capacity;
       buckets.fill(null);
 
@@ -151,8 +151,8 @@ const HashMap = () => {
         keyArray.push(currentBucket.key);
         currentBucket = currentBucket.next;
       }
-      return keyArray;
     }
+    return keyArray;
   }
 
   // method - returns an array containing all the values
@@ -181,6 +181,24 @@ const HashMap = () => {
     return comboArray;
   }
 
+  // debug method
+  function getCapacity() {
+    return capacity;
+  }
+
+  // debug method
+  function bucketSizes() {
+    return buckets.map((node) => {
+      let count = 0;
+      let currentBucket = node;
+      while (currentBucket) {
+        count++;
+        currentBucket = currentBucket.next;
+      }
+      return count;
+    });
+  }
+
   return {
     Node,
     hash,
@@ -193,5 +211,7 @@ const HashMap = () => {
     keys,
     values,
     entries,
+    getCapacity,
+    bucketSizes,
   };
 };
