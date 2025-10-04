@@ -1,4 +1,5 @@
 import { HashMap } from "./HashMap.js";
+import { HashSet } from "./HashSet.js";
 
 const test = HashMap();
 
@@ -82,3 +83,46 @@ console.log(test.length());
 console.log(test.entries());
 console.log(test.getCapacity());
 console.log(test.bucketSizes());
+
+////==== HashSet() Tests ====////
+
+const test2 = HashSet();
+
+// populate hash map up to full capacity (0.75)
+test2.set("apple");
+test2.set("banana");
+test2.set("carrot");
+test2.set("dog");
+test2.set("elephant");
+test2.set("frog");
+test2.set("grape");
+test2.set("hat");
+test2.set("ice cream");
+test2.set("jacket");
+test2.set("kite");
+test2.set("lion");
+
+// report basic hash map data
+console.log(test2.length());
+console.log(test2.keys());
+
+// make load levels exceed load factor, triggering capacity increase
+test.set("moon", "silver");
+console.log(test2.length());
+console.log(test2.getCapacity());
+console.log(test2.bucketSizes());
+
+// run tests with other methods
+console.log(test2.has("ice cream"));
+
+test2.remove("lion");
+console.log(test2.length());
+console.log(test2.keys());
+
+test2.clear();
+console.log(test2.length());
+console.log(test2.keys());
+
+test2.set("car");
+console.log(test2.length());
+console.log(test2.keys());

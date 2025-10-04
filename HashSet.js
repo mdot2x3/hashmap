@@ -1,11 +1,11 @@
-export const HashMap = () => {
+export const HashSet = () => {
   const loadFactor = 0.75;
   let capacity = 16;
   const buckets = new Array(capacity).fill(null);
 
   // helper function - create linked list node objects
-  function Node(key, value, next = null) {
-    return { key, value, next };
+  function Node(key, next = null) {
+    return { key, next };
   }
 
   // method - takes a key and produces a hash code with it
@@ -21,23 +21,22 @@ export const HashMap = () => {
     return hashCode;
   }
 
-  // method - set key/value pair node to a bucket, or updates value
-  function set(key, value) {
-    // determine a bucket number and set the key/value
+  // method - set key node to a bucket
+  function set(key) {
+    // determine a bucket number and set the key
     const index = hash(key) % capacity;
     if (index < 0 || index >= buckets.length) {
       throw new Error("Trying to access index out of bounds");
     }
     // if the bucket is empty, add a new node
     if (!buckets[index]) {
-      buckets[index] = Node(key, value);
+      buckets[index] = Node(key);
     } else {
       // else, if bucket is not empty, traverse the bucket's linked list
       let currentBucket = buckets[index];
       while (true) {
-        // if a node with that key already exists, update its value
+        // if a node with that key already exists, return
         if (currentBucket.key === key) {
-          currentBucket.value = value;
           return;
         }
         // if you reach the end of the list, break and append a new node
@@ -45,7 +44,7 @@ export const HashMap = () => {
         currentBucket = currentBucket.next;
       }
       // if key not found, append new node
-      currentBucket.next = Node(key, value);
+      currentBucket.next = Node(key);
     }
 
     // check load factor and resize if needed
@@ -55,33 +54,17 @@ export const HashMap = () => {
       buckets.length = capacity;
       buckets.fill(null);
 
-      // rehash all existing key/value nodes
+      // rehash all existing key nodes
       for (let node of oldBuckets) {
         let currentBucket = node;
         // while another node in the linked list exists
         while (currentBucket) {
-          set(currentBucket.key, currentBucket.value);
+          set(currentBucket.key);
           // set currentBucket to the next linked list node (if it exists)
           currentBucket = currentBucket.next;
         }
       }
     }
-  }
-
-  // method - returns the value assigned to this key
-  function get(key) {
-    const index = hash(key) % capacity;
-    if (index < 0 || index >= buckets.length) {
-      throw new Error("Trying to access index out of bounds");
-    }
-    let currentBucket = buckets[index];
-    while (currentBucket) {
-      if (currentBucket.key === key) {
-        return currentBucket.value;
-      }
-      currentBucket = currentBucket.next;
-    }
-    return null;
   }
 
   // method - returns true or false based on whether or not the key is in the hash map
@@ -155,32 +138,6 @@ export const HashMap = () => {
     return keyArray;
   }
 
-  // method - returns an array containing all the values
-  function values() {
-    const valueArray = [];
-    for (let node of buckets) {
-      let currentBucket = node;
-      while (currentBucket) {
-        valueArray.push(currentBucket.value);
-        currentBucket = currentBucket.next;
-      }
-    }
-    return valueArray;
-  }
-
-  // method - returns an array that contains each key/value pair
-  function entries() {
-    const comboArray = [];
-    for (let node of buckets) {
-      let currentBucket = node;
-      while (currentBucket) {
-        comboArray.push([currentBucket.key, currentBucket.value]);
-        currentBucket = currentBucket.next;
-      }
-    }
-    return comboArray;
-  }
-
   // debug method
   function getCapacity() {
     return capacity;
@@ -203,14 +160,11 @@ export const HashMap = () => {
     Node,
     hash,
     set,
-    get,
     has,
     remove,
     length,
     clear,
     keys,
-    values,
-    entries,
     getCapacity,
     bucketSizes,
   };
